@@ -8,13 +8,13 @@ angular.module ('notepad').controller ('loginController', function ($scope, $sta
 		console.log($scope.username)
 		$http.post(loginUrl, {username: $scope.username , password: $scope.password}).then(function (response){
 			// recuperer le token
-			var token = response.data.token;
+			var token = response.data.token[0];
 			// stoquer provisoirement le token le temps de la connection
 			localStorage.setItem('Clef', token);
 			// conserver le nom de l'utilisateur, qui est le nom d'auteur des notes
 			localStorage.setItem('Author', $scope.username);
 			// verifier si le token est bon
-			if (_token) $state.go ('notepad');
+			if (token) $state.go ('notepad');
 			else $state.go ('newAccount');
 		});
 	}
