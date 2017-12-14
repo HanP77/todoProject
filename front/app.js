@@ -1,1 +1,1 @@
-var todo = angular.module ('notepad', ['ui.router']);
+angular.module ('notepad', ['ui.router']);
