@@ -8,7 +8,7 @@ angular.module ('notepad').config (function ($stateProvider, $urlRouterProvider)
 	var newAccount ={
 		name: 'newAccount',
 		url: '/create-account',
-		template: '<newcount></newcount>'
+		template: '<create></create>'
 	};
 	var notepad ={
 		name: 'notepad',
@@ -20,5 +20,5 @@ angular.module ('notepad').config (function ($stateProvider, $urlRouterProvider)
 	$stateProvider.state (newAccount);
 	$stateProvider.state (notepad);
 	// page par defaut
-	$urlRouterProvider.otherwise (forLogin);
+	$urlRouterProvider.otherwise ('/login');
 });
