@@ -7,7 +7,8 @@ var dbName = 'mongol';
 var tokenList = [];
 var app = express();
 var _client = "";
-
+var username= "";
+var password= "";
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: false
@@ -38,11 +39,12 @@ function tokenCheck(token) {
 }
 
 function findUser(name) {
-	var db = client.db('mongol');
-  	db.collection('ulan').find({}).toArray(function(err, docs){
+  var db = _client.db('mongol');
+    db.collection('ulan').find({}).toArray(function(err, docs){
     return docs.name == username;
   });
 }
+
 
 
 app.post('/login', function (req, res) {
@@ -76,6 +78,49 @@ app.post('/login', function (req, res) {
 
 
 
+app.post ('/create-account', function (req, res){
+//create-account sert à intégrer de nouveaux users
+
+  // si les parametres ont ete donne
+  if (req.body.username && req.body.password){
+    var Busername = req.body.username;
+    var Bpassword = req.body.password;
+    
+    var user = findUser(); 
+
+    if (user){
+    // Si le profil existe déjà
+    
+      res.status(409).send ('This profile already exist !');
+    }
+    else {
+    // Si le profil n'existe pas
+
+      var newUser = {
+        //On créer un objet qui contient les paramètres
+        username: Busername,
+        password: Bpassword,
+      };
+    
+      // mettre le profil sur la bdd
+      function profilInBdd (bdd){
+        var collection = bdd.collection ('UlanBator');
+        collection.insertOne (newUser, function(error, result){
+          if (error) console.log ("le profil n'a put etre stoque dans la base de donnee");
+          else console.log ("le profil est bien integre a la base de donnee");
+        });
+      }
+      
+        var myDb = _client.db(dbName);
+        profilInBdd (myDb);
+      
+    }
+  }
+  else {
+  // S'il manque une des deux infos requises
+    res.status(404).send ("You should at least enter a password and an username");
+  }
+});
 
 
 
@@ -84,13 +129,10 @@ MongoClient.connect(url, function (err, client) {
   if (err) console.log('Erro! ', err);
   else {
     console.log("Connected successfully to server");
-
     app.listen(3000, function () {
       console.log('Listening on port 3000');
       });
 
     _client = client;
-
-    
-  }
+     }
 });

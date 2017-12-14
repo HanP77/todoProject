@@ -9,7 +9,7 @@ angular.module('notepad').controller('notepadController', function ($scope, $htt
 			// efacer les anciennes notes
 			$scope.noteList =[];
 			// TODO comment sont stoquees les infos dans la bdd
-			console.log (response.data);
+			console.       log (response.data);
 			// noteList est appelee dans la vue
 			$scope.noteList = response.data.noteList;
 		});
