@@ -1,0 +1,22 @@
+{
+  "name": "front",
+  "version": "1.0.0",
+  "description": "Big Project",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HanP77/todoProject.git"
+  },
+  "author": "Deborah/Vincent/Loïc",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HanP77/todoProject/issues"
+  },
+  "homepage": "https://github.com/HanP77/todoProject#readme",
+  "dependencies": {
+    "angular": "^1.6.7"
+  }
+}
