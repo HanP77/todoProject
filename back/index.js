@@ -1,6 +1,6 @@
+var fs = require('fs');
 var express = require('express');
 var bodyParser = require('body-parser');
-var fs = require('fs');
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017";
 var dbName = 'mongol';
@@ -21,7 +21,6 @@ app.use(function(req, res, next) {
   next();
 });
 
-
 function randomToken() {
   var string = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   var result = '';
@@ -39,20 +38,17 @@ function tokenCheck(token) {
 }
 
 function findUser(name) {
-  var db = _client.db('mongol');
-    db.collection('ulan').find({}).toArray(function(err, docs){
+  var db = _client.db(dbName);
+    db.collection('UlanBator').find({name}).toArray(function(err, docs){
     return docs.name == username;
   });
 }
-
-
 
 app.post('/login', function (req, res) {
   var body = req.body;
 
   if (body.username && body.password) {
-    var db = _client.db('mongol');
-
+    var db = _client.db(dbName);
     db.collection('UlanBator').find({username : body.username}).toArray(function(err, docs) {
       if (docs) {
         doc = docs[0];
@@ -75,50 +71,41 @@ app.post('/login', function (req, res) {
   }
 });
 
-
-
-
 app.post ('/create-account', function (req, res){
 //create-account sert à intégrer de nouveaux users
-
-  // si les parametres ont ete donne
-  if (req.body.username && req.body.password){
     var Busername = req.body.username;
     var Bpassword = req.body.password;
-    
-    var user = findUser(); 
-
-    if (user){
+  // si les parametres ont ete donne
+  if (Busername && Bpassword){
+    console.log(findUser(Busername))
+    if (findUser(Busername)){
     // Si le profil existe déjà
-    
       res.status(409).send ('This profile already exist !');
     }
     else {
     // Si le profil n'existe pas
-
       var newUser = {
         //On créer un objet qui contient les paramètres
         username: Busername,
         password: Bpassword,
       };
-    
-      // mettre le profil sur la bdd
+          // mettre le profil sur la bdd
       function profilInBdd (bdd){
         var collection = bdd.collection ('UlanBator');
         collection.insertOne (newUser, function(error, result){
-          if (error) console.log ("le profil n'a put etre stoque dans la base de donnee");
-          else console.log ("le profil est bien integre a la base de donnee");
+          if (error) console.log ("This profile cannot be stored in the database");
+          else console.log ("Profile stored in database")
+            res.status(200).send ('Profile created');
         });
       }
-      
-        var myDb = _client.db(dbName);
-        profilInBdd (myDb);
-      
-    }
+      //On appelle la fonction
+      var myDb = _client.db(dbName);
+      profilInBdd (myDb);
+          }
   }
   else {
   // S'il manque une des deux infos requises
-    res.status(404).send ("You should at least enter a password and an username");
+    res.status(404).send ("You should enter a password and an username");
   }
 });
 
@@ -132,7 +119,6 @@ MongoClient.connect(url, function (err, client) {
     app.listen(3000, function () {
       console.log('Listening on port 3000');
       });
-
     _client = client;
      }
 });
