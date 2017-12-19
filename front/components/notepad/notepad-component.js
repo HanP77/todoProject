@@ -1,4 +1,4 @@
 angular.module('notepad').component('notepad', {
-	templateUrl: 'notepad/notepad-view.html',
+	templateUrl: 'components/notepad/notepad-view.html',
 	controller: 'notepadController',
 });

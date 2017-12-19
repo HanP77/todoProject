@@ -1,4 +1,4 @@
 angular.module ('notepad').component ('create', {
-	templateUrl: 'create-account/create-view.html',
+	templateUrl: 'components/create-account/create-view.html',
 	controller: 'createController'
 });
