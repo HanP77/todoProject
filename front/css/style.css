@@ -1,0 +1,36 @@
+#TitleLogin {
+	text-align: center;
+	color: red;
+}
+
+.loginTitle {
+	text-align: center;
+	color:  blue;
+}
+
+.loginDiv {
+	text-align: center;
+	background-color: blue
+	
+}
+
+.accountTitle {
+	text-align: center;
+}
+
+.accountDiv {
+	text-align: center;
+}
+
+#left {
+	background-color: blue;
+}
+
+#right {
+	background-color: green;
+}
+body {
+	background-color: purple;
+}
+
+

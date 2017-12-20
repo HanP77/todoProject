@@ -1,4 +1,4 @@
-<h1>Notepad</h1>
+<!-- <h1>Notepad</h1> -->
 <!--
 	une note a les champs suivants
 		title
@@ -9,15 +9,63 @@
 		(label)
 	je m'occupe de title et content
 -->
-<div>
-	<input ng-model= "title" type="text" placeholder="Title">
-	<textarea ng-model="content" cols="80" rows="20" placeholder="Note"></textarea>
-	<!-- input ng-model= "label" type="text" placeholder="Label" -->
-	<button ng-click="sendData()">Enregistrez votre note</button>
+<div class = "row">
+	
+
+	<div id = 'left' class="col-sm-3">
+			<span class="glyphicon glyphicon-search"></span>
+			<input type="search" name="search" placeholder="search" class="form-control"> 
+			
+		
+		
+	</div>
+	<div id = 'right' class="col-sm-9" >
+		<div class="btn-group btn-goup-lg"> 
+			<button type="button" class="btn btn-outline ">+</button>
+			<button type="button" class="btn btn-outline ">-</button>
+		</div>
+		<input ng-model= "title" type="text" placeholder="Title" class="form-control"><br>
+		
+		
+		
+	</div>
+<!-- 	<div ng-repeat='aNote in noteList'>
+		<hr>
+		<p>Titre: {{ aNote.title }}</p>
+		<p>Date: {{ aNote.dateUpdate }}</p>
+		<p>Message: {{ aNote.content }}</p>
+	</div> -->
 </div>
-<div ng-repeat='aNote in noteList'>
-	<hr>
-	<p>Titre: {{ aNote.title }}</p>
-	<p>Date: {{ aNote.dateUpdate }}</p>
-	<p>Message: {{ aNote.content }}</p>
+
+<div class = "row">
+	<div id = 'left' class="col-sm-3">
+		<table class="table table-hover">
+		    <thead>
+		      <tr>
+		        <th>Title</th>
+		      </tr>
+		    </thead>
+		    <tbody>
+		      <tr>
+		        <td>Note 3</td>
+		  	  </tr>
+		      <tr>
+		        <td>Note 2</td>
+		      </tr>
+		      <tr>
+		        <td>Note 1</td>
+		     	</tr>
+		    </tbody>
+		  </table>
+		</div>
+
+	<div id = 'right' class="col-sm-9">
+		
+		<div class= "form-group">
+			<textarea ng-model="content" cols="80" rows="20" placeholder="Note" class="form-control"></textarea><br>
+			<!-- input ng-model= "label" type="text" placeholder="Label" -->
+			<button ng-click="sendData()">Enregistrez votre note</button>
+		</div>
+		
+	</div>
 </div>
