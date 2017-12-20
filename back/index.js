@@ -1,3 +1,7 @@
+/* infos
+https://docs.mongodb.com/manual/reference/method/ObjectId.getTimestamp/
+*/
+
 var fs = require('fs');
 var express = require('express');
 var app = express();
@@ -6,24 +10,16 @@ var router = express.Router();
 var MongoClient = require('mongodb').MongoClient;
 var objectId = require('mongodb').ObjectID;
 var assert = require('assert');
-var mongoose = require('mongoose');
-mongoose.connect('localhost:27017/test');
-var Schema = mongoose.Schema;
 
-
-var userDataSchema = new Schema({
-  title: {type: String, required: true},
-  content: String,
-}, {collection: 'UlanBator'});
-
-var UserData = mongoose.model('UlanBator', userDataSchema);
 var url = "mongodb://localhost:27017";
-var dbName = 'mongol';
-var tokenList = [];
-
+const nameDb = 'mongol';
+const namecolUsers = 'UlanBator';
+const nameColNotes = 'notes';
 var _client = "";
 var username= "";
 var password= "";
+var ourUserId ="";
+var tokenList = [];
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -53,109 +49,252 @@ function tokenCheck(token) {
   return result;
 }
 
-function findUser(usernameToFind) {
- var db = _client.db(dbName);
+// findUser().then(function(username) {
+  
+// })
 
-  db.collection('UlanBator').find({username: usernameToFind}).limit(1).toArray(function(err, docs){
-  // console.log(docs);
-  console.log(docs[0].username);
-  return docs[0].username;
+function findUser(usernameToFind) {
+  var db = _client.db(nameDb);
+
+    return db.collection(namecolUsers).find({username: usernameToFind}).limit(1).toArray(function(err, docs){
+      // console.log(docs);
+      console.log(docs[0].username);
   
-    });
-  
+    return docs[0].username;
+  });
+  return 'Bonjour';
 };
 
 
 app.post('/login', function (req, res) {
   var body = req.body;
-
   if (body.username && body.password) {
-    var db = _client.db(dbName);
-    db.collection('UlanBator').find({username : body.username}).toArray(function(err, docs) {
-      console.log(docs);
-      if (docs) {
+    var db = _client.db(nameDb);
+    db.collection(namecolUsers).find({username : body.username}).toArray(function(err, docs){
+      if (docs.length >0) {
         doc = docs[0];
-        // console.log(doc.password, body.password)
         if(doc.password == body.password) {
           tokenList.push(randomToken());
-
-          res.status(200).send({message: 'Valid user', token: tokenList});
+          // recuperer l'id
+          var ourUserId = doc._id.toString();
+          console.log ('user id= '+ doc._id);
+          // recuperer la date
+          var today = doc._id.getTimestamp();
+          res.status(200).send({message: 'Valid user', token: tokenList, userId: ourUserId, date: today });
           console.log('ok')
-        } else {
-          res.status(412).send({message: 'Wrong password'});
-          }
-        } 
-      else {
-          res.status(404).send({message: 'This username does not exist'}); 
         }
+        else res.status(412).send({message: 'Wrong password'});
+      } 
+      else res.status(404).send({message: 'This username does not exist'}); 
     });
-  } else {
-    res.status(412).send({message: 'You should provide an username AND a password'});
   }
+  else res.status(412).send({message: 'You should provide an username AND a password'});
 });
-
 
 app.post ('/create-account', function (req, res){
-//create-account sert à intégrer de nouveaux users
-    var Busername = req.body.username;
-    var Bpassword = req.body.password;
+  //create-account sert à intégrer de nouveaux users
+  console.log ('Try creating a new account');
+  var body = req.body;
   // si les parametres ont ete donne
-  if (Busername && Bpassword){
-    // findUser(Busername);
-    console.log(findUser(Busername));
-    
-    if (findUser(Busername) == Busername){
-    // Si le profil existe déjà
-      res.status(409).send ('This profile already exist !');
-    } else {
-      // Si le profil n'existe pas
-        var newUser = {
-          //On créer un objet qui contient les paramètres
-          username: Busername,
-          password: Bpassword,
-        };
-            // mettre le profil sur la bdd
-        function profilInBdd (bdd){
-          var collection = bdd.collection ('UlanBator');
-          collection.insertOne (newUser, function(error, result){
-            if (error) console.log ("This profile cannot be stored in the database");
-            else console.log ("Profile stored in database")
-              res.status(200).send ('Profile created');
-          });
+  if (body.username && body.password){
+    console.log ('All datas are given');
+    var db = _client.db(nameDb);
+    db.collection(namecolUsers).find({username : body.username}).toArray(function(err, docs){
+      console.log ('Getting db datas');
+      // un utilisateur utilise ce nom
+      if (docs.length >0){
+        console.log ('An older profile with the same name was found');
+        doc = docs[0];
+        if(doc.password == body.password){
+          res.status(409).send ('This profile already exist !');
+          console.log ('This profile already exist !');
         }
-        //On appelle la fonction
-        var myDb = _client.db(dbName);
-        profilInBdd (myDb);
+        else{
+          res.status(409).send ('An user already use this name');
+          console.log ('An user already use this name');
+        }
       }
-  } else {
+      // aucun utilisateur n'utilise ce nom
+      else {
+        console.log ('Creating the new user');
+        //On créer un objet qui contient les paramètres
+        var newUser = {
+          username: body.username,
+          password: body.password,
+        };
+        // mettre le profil sur la bdd
+        var myDb = _client.db(nameDb);
+        var collection = myDb.collection (namecolUsers);
+        collection.insertOne (newUser, function(error, result){
+          if (error){
+            console.log ("This profile cannot be stored in the database");
+            res.status(404).send ('This profile cannot be stored in the database');
+          }
+          else{
+            console.log ("Profile stored in database");
+            res.status(200).send ('Profile created');
+          }
+        });
+      }
+    });
+  }
   // S'il manque une des deux infos requises
-      res.status(404).send ("You should enter a password and an username");
-    }
+  else res.status(404).send ("You should enter a password and an username");
 });
 
+// ____________________________________ les notes ____________________________________
 
-// app.post('/notepad', function (req, res) {
-// })
-
-
-
-app.post('/insert', function(req, res, next) {
-  var item = {
+// lire les notes
+app.get ('/notepad/:author', function(req, res){
+  /* { author: localStorage.getItem ('author') }
+  { author: req.body.author }
+  */
+  var db = _client.db(nameDb);
+  db.collection(nameColNotes).find ({ author: req.params.author }).toArray (function(err, docs){
+    console.log (docs.length +' notes for this user');
+    if (docs.length >0){
+      res.status (200).send ({ message:'Here is the list of notes for this user', notes: docs });
+      // verification, afficher les titres
+      docs.forEach (function (doc){
+        console.log ('title: '+ doc.title);
+      });
+    }
+    else res.status(404).send({message: "This user don't have writen notes yet", notes: docs });
+  });
+});
+// ecrire une nouvelle note
+app.post ('/notepad/new', function(req, res){
+  // creer l'objet note
+  var newNote = {
     title: req.body.title,
     content: req.body.content,
+    author: req.body.author
   };
-  console.log(item);
-  var db = _client.db(dbName);
-  db.collection('UlanBator').insertOne(item, function(err, result) {
-      assert.equal(null, err);
-      console.log('Item inserted');
-      
-    });
-
+  // ajouter la note dans la bdd
+  var myDb = _client.db(nameDb);
+  var myCollection = myDb.collection (nameColNotes);
+  myCollection.insertOne (newNote, function (error, result){
+    if (error){
+      console.log ('This note was not stored in the database');
+      res.status(404).send ('This note was not stored in the database');
+    }
+    else{
+      console.log ('This note was successfully stored in the database');
+      res.status(200).send ('This note was successfully stored in the database');
+    }
+  });
 });
 
-MongoClient.connect(url, function (err, client) {
+// modifier une note
 
+// app.post ('/notepad/update', function(req, res){
+
+//     // loic va m'envoyer author, title, content, newTitle, newContent
+
+//     // recuperer les infos du body
+
+//     var oldNote ={
+
+//         author: req.body.author,
+
+//         title: req.body.title,
+
+//         content: req.body.content
+
+//     };
+
+//     var newTitle = oldNote.title;
+
+//     var newContent = oldNote.content;
+
+//     if (req.body.newTitle) newTitle = req.body.newTitle;
+
+//     if (req.body.newContent) newContent = req.body.newContent;
+
+//     // parler avec la bdd
+
+//     var myDb = _client.db(nameDb);
+
+//     var myCollection = myDb.collection (nameColNotes);
+
+//     myCollection.updateOne (oldNote, { $set { title: newTitle, content: newContent }}, function (error, result){
+
+//         if (error){
+
+//             console.log ('This note was not erased from the database');
+
+//             res.status(404).send ('This note was not erased from the database');
+
+//         }
+
+//         else{
+
+//             console.log ('This note was successfully erased from the database');
+
+//             res.status(200).send ('This note was successfully erased from the database');
+
+//         }
+
+//     });
+
+// });
+
+// // supprimer une note
+
+// app.post ('/notepad/delete', function(req, res){
+
+//     // loic va m'envoyer author, title, content
+
+//     oldNote ={
+
+//         author: req.body.author,
+
+//         title: req.body.title,
+
+//         content: req.body.content
+
+//     };
+
+//     // parler avec la bdd
+
+//     var myDb = _client.db(nameDb);
+
+//     var myCollection = myDb.collection (nameColNotes);
+
+//     myCollection.deleteOne (oldNote, function (error, result){
+
+//         if (error){
+
+//             console.log ('This note was not erased from the database');
+
+//             res.status(404).send ('This note was not erased from the database');
+
+//         }
+
+//         else{
+
+//             console.log ('This note was successfully erased from the database');
+
+//             res.status(200).send ('This note was successfully erased from the database');
+
+//         }
+
+//     });
+
+// });
+
+
+
+
+
+
+
+
+
+
+// ____________________________________ allumer mongodb ____________________________________
+
+MongoClient.connect(url, function (err, client) {
   if (err) console.log('Erro! ', err);
   else {
     console.log("Connected successfully to server");
@@ -165,4 +304,3 @@ MongoClient.connect(url, function (err, client) {
     _client = client;
      }
 });
-module.exports = router;

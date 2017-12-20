@@ -10,12 +10,13 @@ angular.module ('notepad').controller ('loginController', function ($scope, $sta
 		console.log($scope.password);
 	
 		$http.post(loginUrl, {username: $scope.username , password: $scope.password}).then(function (response){
-			var idUser = response.data.idUser;
+			// var idUser = response.data.idUser;
 			var token = response.data.token[0];
+			var userId = response.data.userId;
 			// console.log(token)
 			localStorage.setItem('Clef', token);
-			// localStorage.setItem('idUser', idUser);
-			localStorage.setItem('Author', $scope.username);
+			localStorage.setItem('author', userId);
+			
 			
 			if (token) $state.go ('notepad');
 			else $state.go ('newAccount');

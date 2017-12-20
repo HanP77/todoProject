@@ -21,7 +21,7 @@
 	</div>
 	<div id = 'right' class="col-sm-9" >
 		<div class="btn-group btn-goup-lg"> 
-			<button type="button" class="btn btn-outline ">+</button>
+			<button type="button" ng-click="createNote()" class="btn btn-outline ">+</button>
 			<button type="button" class="btn btn-outline ">-</button>
 		</div>
 		<input ng-model= "title" type="text" placeholder="Title" class="form-control"><br>
@@ -29,17 +29,12 @@
 		
 		
 	</div>
-<!-- 	<div ng-repeat='aNote in noteList'>
-		<hr>
-		<p>Titre: {{ aNote.title }}</p>
-		<p>Date: {{ aNote.dateUpdate }}</p>
-		<p>Message: {{ aNote.content }}</p>
-	</div> -->
+
 </div>
 
 <div class = "row">
 	<div id = 'left' class="col-sm-3">
-		<table class="table table-hover">
+		<!-- <table class="table table-hover">
 		    <thead>
 		      <tr>
 		        <th>Title</th>
@@ -57,14 +52,28 @@
 		     	</tr>
 		    </tbody>
 		  </table>
+ -->
+		  <div ng-repeat='notes in note' ng-click=>
+
+		  	<hr>
+
+		  	<p> id: {{notes._id}}</p>
+
+		  	<p> title: {{notes.title}}</p>
+		  	
+		  	<p> Content: {{notes.content}}</p>
+		  </div>
 		</div>
+
+
 
 	<div id = 'right' class="col-sm-9">
 		
 		<div class= "form-group">
-			<textarea ng-model="content" cols="80" rows="20" placeholder="Note" class="form-control"></textarea><br>
-			<!-- input ng-model= "label" type="text" placeholder="Label" -->
-			<button ng-click="createNote()">Enregistrez votre note</button>
+
+			<textarea ng-model="content" ng-change="change()"cols="80" rows="20" placeholder="Note" class="form-control"></textarea><br>
+			
+			
 		</div>
 		
 	</div>
