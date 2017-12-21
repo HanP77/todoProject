@@ -1,49 +1,41 @@
 <head>
   <link rel="stylesheet" href="css/notepad.css">
 </head>
-
-
-<!-- <h1>Notepad</h1> -->
-<!--
-    une note a les champs suivants
-        title
-        content
-        author
-        dateCreation
-        dateUpdate
-        (label)
-    je m'occupe de title et content
--->
 <div class="row">
   <!--
     <div id='left' class="col-sm-3">
         <input type="search" ng-model='search' placeholder="search" class="form-control"/>
-        <button ng-click='seachFunc()'>Cherchez</button>
+        <button ng-click='seachFunc()'>Find notes</button>
     </div>
   -->
     <div id='left' class="col-sm-3">
-            <span></span>
-            <input type="search" name="search" placeholder="search" class="form-control" ng-model="search">
-    </div>
-    <div id='left' class="col-sm-3">
-        <button id ='clear' ng-click="clear()">New note</button>
-        <div ng-repeat="notes in note | orderBy:'dateUpdate':reverse  | filter : search" ng-click="transfert(notes)" class= "table table-dark table-hover table-responsive">
+          <button id='clear' ng-click="clear()">Erase</button>
+        <!--
+          <div ng-repeat="notes in note | orderBy: 'dateUpdate'reverse | filter : search" ng-click="transfert(notes)" class= "table table-dark table-hover table responsive" >
+          <div ng-repeat="notes in note">
+        -->
+          <div ng-repeat="notes in note">
               <hr>
               <p ng-model="notes.title">Title : {{notes.title}}</p>
               <p ng-model="notes.content">{{notes.content}}</p>
-        </div>
-     </div>
+            <!--
+              <p ng-model="notes.dateCreation">Creation date : {{notes.dateCreation}}</p>
+              <p ng-model="notes.dateUpdate">Last Update : {{notes.dateUpdate}}</p>
+            -->
+          </div>
+    </div>
 </div>
 <div class="row">
     <div id='right' class="col-sm-9" >
             <button type="button" ng-click="createNote()" class="btn btn-primary btn-block">+</button>
             <button type="button" ng-click="deleteNote()" class="btn btn-primary btn-block">-</button>
-            <input ng-model= "title" type="text" placeholder="Title" class="form-control"><br>
+                <input ng-model= "title" type="text" placeholder="Title" class="form-control">
     </div>
     <div id='right' class="col-sm-9">
         <div class= "form-group">
             <textarea ng-model="content"  cols="80" rows="20" placeholder="note" class="form-control">
-            </textarea><br>
+                {{content}}
+            </textarea>
         </div>
     </div>
 </div>

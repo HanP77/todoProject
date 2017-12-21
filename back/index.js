@@ -181,34 +181,42 @@ app.get ('/notepad/:author', function(req, res){
     else res.status(404).send({message: "This user don't have writen notes yet", notes: docs });
   });
 });
+// rechercher dans le titre des notes
+app.post ('/notepad/search', function(req, res){
+  var keyWord = 'a';
+
+
+
+
+});
 // creer ou modifier une note
 app.post ('/notepad/new', function(req, res){
   // loic m'envoi l'id qui peut etre vide
   var today = getDate();
   var myDb = _client.db(nameDb);
   var myCollection = myDb.collection (nameColNotes);
-  // recuperer l'id
-  var idd = new objectId (req.body.id);
-  console.log(idd);
   // updater une note
-  if (idd){
+  if (req.body.noteId){
+	  // recuperer l'id
+	  var idd = new objectId (req.body.noteId);
+	  console.log('id= '+ idd);
     var noteId = { _id: idd };
     // si le titre a ete modifie
-    if (req.body.newTitle){
-      myCollection.updateOne (noteId, { $set: { title: req.body.newTitle }}, function (error){
+    if (req.body.title){
+      myCollection.updateOne (noteId, { $set: { title: req.body.title }}, function (error){
         if (error) console.log ('The title was not updated');
         else console.log ('The title was successfully updated');
       });
     }
     // si le contenu a ete modifie
-    if (req.body.newContent){
-      myCollection.updateOne (noteId, { $set: { content: req.body.newContent }}, function (error){
+    if (req.body.content){
+      myCollection.updateOne (noteId, { $set: { content: req.body.content }}, function (error){
         if (error) console.log ('The content was not updated');
         else console.log ('The content was successfully updated');
       });
     }
     // modifier la date d'update
-    if (req.body.newTitle || req.body.newContent){
+    if (req.body.title && req.body.content){
       var today = getDate();
       myCollection.updateOne (noteId, { $set: { dateUpdate: today }}, function (error){
         if (error){
@@ -240,7 +248,7 @@ app.post ('/notepad/new', function(req, res){
       }
       else{
         console.log ('This note was successfully stored in the database');
-        res.status(404).send ('This note was successfully stored in the database');
+        res.status(200).send ('This note was successfully stored in the database');
       }
     });
   }

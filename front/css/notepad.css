@@ -1,0 +1,9 @@
+body {
+	max-width: 100%;
+	padding: 5%;
+	text-align: left;
+}
+div.row {
+	display: inline-block;
+	width: 40%;
+}

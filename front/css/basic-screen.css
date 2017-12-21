@@ -1,0 +1,40 @@
+/*
+author: Deborah Powers
+job: Dev Web
+school: Simplon Lieusaint
+creation: 2017/10/26
+update: 2017/11/07
+
+css de base de mon site.
+fonctionne avec basic-print.css, qui contient l'organisation de base de mes pages.
+*/
+/* general */
+body * { color: #882200; }
+html { background-color: #882200; }
+body {
+	padding: 5%;
+	background-color: #FFCC88;
+	min-height: 10cm;
+	text-align: center
+}
+input, button, textarea {
+	border: 2px solid #4BB;
+	padding: 2mm;
+	border-radius: 2mm;
+}
+button {
+	color: #FFCC88;
+	background-color: #882200;
+	min-width: 3cm;
+	min-height: 1cm;
+}
+img {
+	background-color: #221000;
+	color: #FFCC88;
+}
+a { color: #882200; }
+hr {
+	background-color: #4BB;
+	border: none;
+	height: 1mm;
+}

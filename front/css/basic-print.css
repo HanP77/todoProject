@@ -1,0 +1,70 @@
+/*
+author: Deborah Powers
+job: Dev Web
+school: Simplon Lieusaint
+creation: 2017/10/28
+update: 2017/11/07
+
+css de base de mon site, pour l'imprimer
+*/
+/* general */
+body * {
+	margin: 0;
+	padding: 0;
+	margin-bottom: 1mm;
+	font-size: 100%;
+	line-height: 6mm;
+	font-family: serif;
+	text-decoration: none;
+	color: black;
+}
+body {
+	margin: auto;
+	padding: 2mm;
+}
+h1 {
+	text-align: center;
+	font-size: 180%;
+	font-weight: bold;
+	height: 1cm;
+}
+h2 {
+	margin: 8mm;
+	font-size: 150%;
+}
+ul { margin-left: 2cm; }
+a { display: block; }
+button {
+	text-align: center;
+	border: 1px solid #777777;
+	background-color: #EEEEEE;
+	border: none;
+}
+img { font-size: 150%; }
+/* navigation */
+div.nav, div.infos {
+	width: 25%;
+	min-width: 3cm;
+	position: relative;
+	left: 75%;
+	text-align: right;
+}
+div.nav a {
+	margin-bottom: 0;
+	text-align: center;
+	border: 1px solid #777777;
+}
+/* info sur les pages */
+div.infos { display: none; }
+div.infos h1 {
+	font-size: 100%;
+	font-weight: normal;
+}
+div.infos p { font-size: 80%; }
+/* articles */
+div.article {
+	border: 10px double #777777;
+	border-radius: 1cm;
+	padding: 5mm;
+}
+p.infos { display: none; }
