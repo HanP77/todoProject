@@ -20,11 +20,10 @@
 		
 	</div>
 	<div id = 'right' class="col-sm-9" >
-		<div class="btn-group btn-goup-lg"> 
-			<button type="button" ng-click="createNote()" class="btn btn-outline ">+</button>
-			<button type="button" ng-click="deleteNote()" class="btn btn-outline ">-</button>
-		</div>
-		<input ng-model= "title" type="text" placeholder="Title" class="form-control"><br>
+		
+			<button type="button" ng-click="createNote()" class="btn btn-primary btn-block">+</button>
+			<button type="button" ng-click="deleteNote()" class="btn btn-primary btn-block">-</button>
+				<input ng-model= "title" type="text" placeholder="Title" class="form-control"><br>
 		
 		
 		
@@ -34,39 +33,52 @@
 
 <div class = "row">
 	<div id = 'left' class="col-sm-3">
-		<!-- <table class="table table-hover">
+		<table class="table table-responsive-sm">
 		    <thead>
 		      <tr>
 		        <th>Title</th>
 		      </tr>
 		    </thead>
 		    <tbody>
-		      <tr>
-		        <td>Note 3</td>
-		  	  </tr>
-		      <tr>
-		        <td>Note 2</td>
-		      </tr>
-		      <tr>
-		        <td>Note 1</td>
-		     	</tr>
-		    </tbody>
-		  </table>
- -->
-
-
-		  <div ng-repeat="notes in note | orderBy: 'title'" >
+		   	 <div ng-repeat="notes in note | orderBy: 'title'" >
 			
 		  	<hr>
 
 		  	<button ng-click="transfert(notes)">test</button>
 
-		  	<!-- <input type= "text "ng-model="notes._id">{{notes._id}}</input>
-
-		  	<input ng-model="notes.title">{{notes.title}}</input> -->
 		  	
-		  	<p ng-model="currentContent">{{notes.content}}</p>
+
+		  	<p ng-model="notes.title">Title : {{notes.title}}</p>
+		  	
+		  	<p ng-model="notes.dateCreation">Creation date : {{notes.dateCreation}}</p>
+
+		  	<p ng-model="notes.dateUpdate">Last Update : {{notes.dateUpdate}}</p>
+
+		  	<!-- <p ng-model="currentContent">{{notes.content}}</p> -->
 		  </div>
+
+
+		    </tbody>
+		  </table>
+
+
+
+		 <!--  <div ng-repeat="notes in note | orderBy: 'title'" >
+			
+		  	<hr>
+
+		  	<button ng-click="transfert(notes)">test</button>
+
+		  	
+
+		  	<p ng-model="notes.title">Title : {{notes.title}}</p>
+		  	
+		  	<p ng-model="notes.dateCreation">Creation date : {{notes.dateCreation}}</p>
+
+		  	<p ng-model="notes.dateUpdate">Last Update : {{notes.dateUpdate}}</p>
+
+		  	<!-- <p ng-model="currentContent">{{notes.content}}</p> -->
+		  </div> -->
 		</div>
 
 

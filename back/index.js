@@ -181,76 +181,79 @@ app.get ('/notepad/:author', function(req, res){
     else res.status(404).send({message: "This user don't have writen notes yet", notes: docs });
   });
 });
-// ecrire une nouvelle note
+// creer ou modifier une note
 app.post ('/notepad/new', function(req, res){
+  // loic m'envoi l'id qui peut etre vide
   var today = getDate();
-  // creer l'objet note
-  var newNote = {
-    title: req.body.title,
-    content: req.body.content,
-    author: req.body.author,
-    dateCreation: today,
-    dateUpdate: today
-  };
-  // ajouter la note dans la bdd
   var myDb = _client.db(nameDb);
   var myCollection = myDb.collection (nameColNotes);
-  myCollection.insertOne (newNote, function (error, result){
-    if (error){
-      console.log ('This note was not stored in the database');
-      res.status(404).send ('This note was not stored in the database');
+  // recuperer l'id
+  var idd = new objectId (req.body.id);
+  console.log(idd);
+  // updater une note
+  if (idd){
+    var noteId = { _id: idd };
+    // si le titre a ete modifie
+    if (req.body.newTitle){
+      myCollection.updateOne (noteId, { $set: { title: req.body.newTitle }}, function (error){
+        if (error) console.log ('The title was not updated');
+        else console.log ('The title was successfully updated');
+      });
     }
-    else{
-      console.log ('This note was successfully stored in the database');
-      res.status(200).send ('This note was successfully stored in the database');
+    // si le contenu a ete modifie
+    if (req.body.newContent){
+      myCollection.updateOne (noteId, { $set: { content: req.body.newContent }}, function (error){
+        if (error) console.log ('The content was not updated');
+        else console.log ('The content was successfully updated');
+      });
     }
-  });
-});
-// modifier une note
-app.post ('/notepad/update', function(req, res){
-  var today = getDate();
-  // parler avec la bdd
-  var myDb = _client.db(nameDb);
-  var myCollection = myDb.collection (nameColNotes);
-  var noteId = { _id: req.body.id };
-  // si le titre a ete modifie
-  if (req.body.newTitle){
-    myCollection.updateOne (noteId, { $set: { title: req.body.newTitle }}, function (error){
-      if (error) console.log ('The title was not updated');
-      else console.log ('The title was successfully updated');
-    });
+    // modifier la date d'update
+    if (req.body.newTitle || req.body.newContent){
+      var today = getDate();
+      myCollection.updateOne (noteId, { $set: { dateUpdate: today }}, function (error){
+        if (error){
+          console.log ('The date was not updated');
+          res.status(404).send ('The note was not updated');
+        }
+        else{
+          console.log ('The date was successfully updated');
+          res.status(200).send ('The note was successfully updated');
+        }
+      });
+    }
   }
-  // si le contenu a ete modifie
-  if (req.body.newContent){
-    myCollection.updateOne (noteId, { $set: { content: req.body.newContent }}, function (error){
-      if (error) console.log ('The content was not updated');
-      else console.log ('The content was successfully updated');
-    });
-  }
-  // modifier la date d'update
-  if (req.body.newTitle || req.body.newContent){
-    var today = getDate();
-    myCollection.updateOne (noteId, { $set: { dateUpdate: today }}, function (error){
+  // creer une note
+  else{
+    // creer l'objet note
+    var newNote = {
+      title: req.body.title,
+      content: req.body.content,
+      author: req.body.author,
+      dateCreation: today,
+      dateUpdate: today
+    };
+    // ajouter la note dans la bdd
+    myCollection.insertOne (newNote, function (error, result){
       if (error){
-        console.log ('The note was not updated');
-        res.status(404).send ('The date was not updated');
+        console.log ('This note was not stored in the database');
+        res.status(404).send ('This note was not stored in the database');
       }
       else{
-        console.log ('The note was successfully updated');
-        res.status(200).send ('The date was successfully updated');
+        console.log ('This note was successfully stored in the database');
+        res.status(404).send ('This note was successfully stored in the database');
       }
     });
   }
 });
-// supprimer une note
 app.post ('/notepad/delete', function(req, res){
   console.log('paquet reçu');
   // loic va m'envoyer id
   // parler avec la bdd
   var myDb = _client.db(nameDb);
   var myCollection = myDb.collection (nameColNotes);
-  
-  myCollection.deleteOne ({ "_id":  req.body.noteId }, function (error){
+  var idd = new objectId(req.body.noteId);
+  console.log(idd);
+  myCollection.deleteOne ({ "_id":  idd }, function (error){
     if (error){
       console.log ('This note was not erased from the database');
       res.status(404).send ('This note was not erased from the database');
@@ -260,59 +263,8 @@ app.post ('/notepad/delete', function(req, res){
       res.status(200).send ('This note was successfully erased from the database');
     }
   });
-});
-/*
-// modifier une note
-app.post ('/notepad', function(req, res){
-  // loic va m'envoyer author, title, content, newTitle, newContent
-  // recuperer les infos du body
-  var oldNote ={
-    author: req.body.author,
-    title: req.body.title,
-    content: req.body.content
-  };
-  var newTitle = oldNote.title;
-  var newContent = oldNote.content;
-  if (req.body.newTitle) newTitle = req.body.newTitle;
-  if (req.body.newContent) newContent = req.body.newContent;
-  // parler avec la bdd
-  var myDb = _client.db(nameDb);
-  var myCollection = myDb.collection (nameColNotes);
-  myCollection.updateOne (oldNote, { $set { title: newTitle, content: newContent }}, function (error, result){
-    if (error){
-      console.log ('This note was not erased from the database');
-      res.status(404).send ('This note was not erased from the database');
-    }
-    else{
-      console.log ('This note was successfully erased from the database');
-      res.status(200).send ('This note was successfully erased from the database');
-    }
-  });
-});
-// supprimer une note
-app.post ('/notepad', function(req, res){
-  // loic va m'envoyer author, title, content
-  oldNote ={
-    author: req.body.author,
-    title: req.body.title,
-    content: req.body.content
-  };
-  // parler avec la bdd
-  var myDb = _client.db(nameDb);
-  var myCollection = myDb.collection (nameColNotes);
-  myCollection.deleteOne (oldNote, function (error, result){
-    if (error){
-      console.log ('This note was not erased from the database');
-      res.status(404).send ('This note was not erased from the database');
-    }
-    else{
-      console.log ('This note was successfully erased from the database');
-      res.status(200).send ('This note was successfully erased from the database');
-    }
-  });
-});
-*/
 
+});
 // ____________________________________ allumer mongodb ____________________________________
 
 MongoClient.connect(url, function (err, client) {

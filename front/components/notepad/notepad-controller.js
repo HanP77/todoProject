@@ -17,7 +17,7 @@ angular.module('notepad').controller('notepadController', function ($scope, $sta
 		
 	}
 	function _createNote(){
-			$http.post('http://localhost:3000/notepad/new', {title: $scope.title, content: $scope.content, author: userId}).then(function (response){
+			$http.post('http://localhost:3000/notepad/new', {title: $scope.title, content: $scope.content, author: userId, noteId: $scope.Id}).then(function (response){
 			console.log('Data send !');
 			
 			location.reload();
