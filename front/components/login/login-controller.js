@@ -6,9 +6,8 @@ angular.module ('notepad').controller ('loginController', function ($scope, $sta
 
 	function _sendData(){
 
-		console.log($scope.username);
-		console.log($scope.password);
-	
+		// console.log($scope.username);
+		// console.log($scope.password);
 		$http.post(loginUrl, {username: $scope.username , password: $scope.password}).then(function (response){
 			// var idUser = response.data.idUser;
 			var token = response.data.token[0];
@@ -16,15 +15,12 @@ angular.module ('notepad').controller ('loginController', function ($scope, $sta
 			// console.log(token)
 			localStorage.setItem('Clef', token);
 			localStorage.setItem('author', userId);
-			
-			
 			if (token) $state.go ('notepad');
 			else $state.go ('newAccount');
 		}, function(error) {
 			console.log('error here', error)
 		});
 	}
-	// creer un compte, aller sur la page de creation de compte
 	function _goToAccountCreation(){
 		$state.go ('newAccount');
 	}

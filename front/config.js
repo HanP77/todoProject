@@ -1,4 +1,3 @@
-// liste des vues
 angular.module ('notepad').config (function ($stateProvider, $urlRouterProvider){
 	var forLogin ={
 		name: 'login',
@@ -15,10 +14,10 @@ angular.module ('notepad').config (function ($stateProvider, $urlRouterProvider)
 		url: '/notepad',
 		template: '<notepad></notepad>'
 	};
-	// creer les pages
+
 	$stateProvider.state (forLogin);
 	$stateProvider.state (newAccount);
 	$stateProvider.state (notepad);
-	// page par defaut
+	
 	$urlRouterProvider.otherwise ('/login');
 });

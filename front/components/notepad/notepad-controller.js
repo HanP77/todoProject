@@ -19,12 +19,11 @@ angular.module('notepad').controller('notepadController', function ($scope, $sta
     }
     function _createNote(){
             $http.post('http://localhost:3000/notepad/new', {title: $scope.title, content: $scope.content, author: userId, noteId: $scope.noteId}).then(function (response){
-            console.log('Data send !');
             // console.log($scope.Id);
+            console.log('Data send !');
             _getNote();
             });
     }
-
 
     function _getNote(){
         console.log(userId);
@@ -34,15 +33,11 @@ angular.module('notepad').controller('notepadController', function ($scope, $sta
         })
     }
 
-
-
-
     function _deleteNote() {
         $http.post('http://localhost:3000/notepad/delete', {noteId: $scope.noteId}).then(function (response){
             _getNote();
         });
     }
-
 
     function _clear() {
         $scope.title = "";

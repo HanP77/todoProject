@@ -69,17 +69,12 @@ function getDate(){
   if (dayList[1] <10) dayList[1] = '0'+ dayList[1];
   dayList.reverse();
   day = dayList.join ('-');
-  // heure
   var hour = todayDate.toLocaleTimeString();
   var hourList = hour.split (':');
   hour = hourList.join ('-');
-  // concatener
   var today = day +'-'+ hour;
   return today;
 }
-
-// ____________________________________ se loguer ____________________________________
-
 
 app.post('/login', function (req, res) {
   var body = req.body;
@@ -90,10 +85,8 @@ app.post('/login', function (req, res) {
         doc = docs[0];
         if(doc.password == body.password) {
           tokenList.push(randomToken());
-          // recuperer l'id
           var ourUserId = doc._id.toString();
           console.log ('user id= '+ doc._id);
-          // recuperer la date
           var today = doc._id.getTimestamp();
           res.status(200).send({message: 'Valid user', token: tokenList, userId: ourUserId, date: today });
           console.log('ok')
@@ -106,21 +99,14 @@ app.post('/login', function (req, res) {
   else res.status(412).send({message: 'You should provide an username AND a password'});
 });
 
-
-// ____________________________________ creer un compte ____________________________________
-
-
 app.post ('/create-account', function (req, res){
-  //create-account sert à intégrer de nouveaux users
   console.log ('Try creating a new account');
   var body = req.body;
-  // si les parametres ont ete donne
   if (body.username && body.password){
     console.log ('All datas are given');
     var db = _client.db(nameDb);
     db.collection(namecolUsers).find({username : body.username}).toArray(function(err, docs){
       console.log ('Getting db datas');
-      // un utilisateur utilise ce nom
       if (docs.length >0){
         console.log ('An older profile with the same name was found');
         doc = docs[0];
@@ -133,15 +119,12 @@ app.post ('/create-account', function (req, res){
           console.log ('An user already use this name');
         }
       }
-      // aucun utilisateur n'utilise ce nom
       else {
         console.log ('Creating the new user');
-        //On créer un objet qui contient les paramètres
         var newUser = {
           username: body.username,
           password: body.password,
         };
-        // mettre le profil sur la bdd
         var myDb = _client.db(nameDb);
         var collection = myDb.collection (namecolUsers);
         collection.insertOne (newUser, function(error, result){
@@ -157,13 +140,9 @@ app.post ('/create-account', function (req, res){
       }
     });
   }
-  // S'il manque une des deux infos requises
   else res.status(404).send ("You should enter a password and an username");
 });
 
-// ____________________________________ les notes ____________________________________
-
-// lire les notes
 app.get ('/notepad/:author', function(req, res){
   /* { author: localStorage.getItem ('author') }
   { author: req.body.author }
@@ -173,7 +152,6 @@ app.get ('/notepad/:author', function(req, res){
     console.log (docs.length +' notes for this user');
     if (docs.length >0){
       res.status (200).send ({ message:'Here is the list of notes for this user', notes: docs });
-      // verification, afficher les titres
       docs.forEach (function (doc){
         console.log ('title: '+ doc.title);
       });
@@ -181,41 +159,30 @@ app.get ('/notepad/:author', function(req, res){
     else res.status(404).send({message: "This user don't have writen notes yet", notes: docs });
   });
 });
-// rechercher dans le titre des notes
 app.post ('/notepad/search', function(req, res){
   var keyWord = 'a';
-
-
-
-
 });
-// creer ou modifier une note
+
 app.post ('/notepad/new', function(req, res){
-  // loic m'envoi l'id qui peut etre vide
   var today = getDate();
   var myDb = _client.db(nameDb);
   var myCollection = myDb.collection (nameColNotes);
-  // updater une note
   if (req.body.noteId){
-	  // recuperer l'id
 	  var idd = new objectId (req.body.noteId);
 	  console.log('id= '+ idd);
     var noteId = { _id: idd };
-    // si le titre a ete modifie
     if (req.body.title){
       myCollection.updateOne (noteId, { $set: { title: req.body.title }}, function (error){
         if (error) console.log ('The title was not updated');
         else console.log ('The title was successfully updated');
       });
     }
-    // si le contenu a ete modifie
     if (req.body.content){
       myCollection.updateOne (noteId, { $set: { content: req.body.content }}, function (error){
         if (error) console.log ('The content was not updated');
         else console.log ('The content was successfully updated');
       });
     }
-    // modifier la date d'update
     if (req.body.title && req.body.content){
       var today = getDate();
       myCollection.updateOne (noteId, { $set: { dateUpdate: today }}, function (error){
@@ -230,9 +197,7 @@ app.post ('/notepad/new', function(req, res){
       });
     }
   }
-  // creer une note
   else{
-    // creer l'objet note
     var newNote = {
       title: req.body.title,
       content: req.body.content,
@@ -240,7 +205,6 @@ app.post ('/notepad/new', function(req, res){
       dateCreation: today,
       dateUpdate: today
     };
-    // ajouter la note dans la bdd
     myCollection.insertOne (newNote, function (error, result){
       if (error){
         console.log ('This note was not stored in the database');
@@ -255,8 +219,6 @@ app.post ('/notepad/new', function(req, res){
 });
 app.post ('/notepad/delete', function(req, res){
   console.log('paquet reçu');
-  // loic va m'envoyer id
-  // parler avec la bdd
   var myDb = _client.db(nameDb);
   var myCollection = myDb.collection (nameColNotes);
   var idd = new objectId(req.body.noteId);
@@ -273,7 +235,6 @@ app.post ('/notepad/delete', function(req, res){
   });
 
 });
-// ____________________________________ allumer mongodb ____________________________________
 
 MongoClient.connect(url, function (err, client) {
   if (err) console.log('Erro! ', err);
